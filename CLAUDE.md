@@ -10,6 +10,7 @@ Before generating any code, ALWAYS read and follow the relevant documentation fi
 - `docs/data-fetching.md` — Data fetching, database queries, and user data isolation rules
 - `docs/data-mutations.md` — Server actions, data writes, and Zod validation standards
 - `docs/auth.md` — Authentication standards (Clerk)
+- `docs/routing.md` — Route structure and middleware-based route protection
 
 ## Project Overview
 

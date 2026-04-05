@@ -65,3 +65,29 @@ export async function getWorkoutsWithExerciseCount(
     exerciseCount: workout.workoutExercises.length,
   }));
 }
+
+export async function getWorkoutById(userId: string, workoutId: number) {
+  const result = await db
+    .select({
+      id: workouts.id,
+      name: workouts.name,
+      startedAt: workouts.startedAt,
+    })
+    .from(workouts)
+    .where(and(eq(workouts.id, workoutId), eq(workouts.userId, userId)))
+    .limit(1);
+
+  return result[0] ?? null;
+}
+
+export async function updateWorkout(
+  userId: string,
+  workoutId: number,
+  name: string,
+  startedAt: Date
+) {
+  return db
+    .update(workouts)
+    .set({ name, startedAt })
+    .where(and(eq(workouts.id, workoutId), eq(workouts.userId, userId)));
+}
