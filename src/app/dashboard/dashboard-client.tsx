@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -58,17 +59,19 @@ export default function DashboardClient({
         ) : (
           <div className="space-y-3">
             {workouts.map((workout) => (
-              <Card key={workout.id}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">{workout.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    {workout.exerciseCount} exercise
-                    {workout.exerciseCount !== 1 && "s"}
-                  </p>
-                </CardContent>
-              </Card>
+              <Link key={workout.id} href={`/dashboard/workout/${workout.id}`}>
+                <Card className="hover:bg-accent transition-colors cursor-pointer">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">{workout.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {workout.exerciseCount} exercise
+                      {workout.exerciseCount !== 1 && "s"}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         )}
