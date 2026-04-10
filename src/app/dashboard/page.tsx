@@ -25,7 +25,7 @@ export default async function DashboardPage({
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
       <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
-      <DashboardClient workouts={workouts} selectedDate={selectedDate} />
+      <DashboardClient workouts={workouts} dateString={dateParam} />
     </main>
   );
 }

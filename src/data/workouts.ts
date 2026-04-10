@@ -1,6 +1,6 @@
-import { and, eq, gte, lt } from "drizzle-orm";
+import { and, asc, eq, gte, lt } from "drizzle-orm";
 import { db } from "@/db";
-import { workouts, workoutExercises } from "@/db/schema";
+import { workouts, workoutExercises, sets } from "@/db/schema";
 
 export async function insertWorkout(
   userId: string,
@@ -64,4 +64,22 @@ export async function getWorkoutsWithExerciseCount(
     startedAt: workout.startedAt,
     exerciseCount: workout.workoutExercises.length,
   }));
+}
+
+export async function getWorkoutById(userId: string, workoutId: number) {
+  const workout = await db.query.workouts.findFirst({
+    where: and(eq(workouts.id, workoutId), eq(workouts.userId, userId)),
+    with: {
+      workoutExercises: {
+        orderBy: asc(workoutExercises.order),
+        with: {
+          exercise: true,
+          sets: {
+            orderBy: asc(sets.setNumber),
+          },
+        },
+      },
+    },
+  });
+  return workout ?? null;
 }
