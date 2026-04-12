@@ -1,10 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type Workout = {
   id: number;
@@ -30,6 +34,7 @@ export default function DashboardClient({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [open, setOpen] = useState(false);
 
   const selectedDate = parseDateString(dateString);
 
@@ -38,29 +43,41 @@ export default function DashboardClient({
     const params = new URLSearchParams(searchParams.toString());
     const dateKey = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
     params.set("date", dateKey);
+    setOpen(false);
     router.push(`/dashboard?${params.toString()}`);
     router.refresh();
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8">
+    <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Select Date</h3>
-        <Card>
-          <CardContent className="p-0">
+        <h3 className="text-lg font-semibold mb-3">Select Date</h3>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="outline">
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {format(selectedDate, "do MMM yyyy")}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
               selected={selectedDate}
               onSelect={handleDateSelect}
             />
-          </CardContent>
-        </Card>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <section>
-        <h3 className="text-lg font-semibold mb-4">
-          Workouts for {format(selectedDate, "do MMM yyyy")}
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">
+            Workouts for {format(selectedDate, "do MMM yyyy")}
+          </h3>
+          <Link href="/dashboard/workout/new">
+            <Button>Log New Workout</Button>
+          </Link>
+        </div>
 
         {workouts.length === 0 ? (
           <p className="text-muted-foreground">
@@ -89,3 +106,4 @@ export default function DashboardClient({
     </div>
   );
 }
+
